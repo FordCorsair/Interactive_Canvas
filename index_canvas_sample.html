@@ -1,0 +1,97 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+"http://www.w3.org/TR/html4/loose.dtd">
+ 
+<html lang="en" dir="ltr">
+<head>
+<title>Master HTML :: Dominic Coleman</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<link href="css/master.css" rel="stylesheet" type="text/css">
+<!--/****************************************************
+Created by Dominic Coleman
+www.domcoleman.co.uk/contact.html
+****************************************************/-->
+</head>
+
+<body>
+
+<div id="wrapper">
+
+<div id="contentmain">
+<h1>H1 Heading</h1>
+<h2>H2 Heading</h2>
+<div class="container">
+  <div class="btn"></div>
+  <input id="amount"type="text" />
+  <div id="slider" style="height:200px;"></div> 
+  <canvas id="stage" width="289" height="289" style="border:2px solid black;top: 20%;  left: 50%;" ></canvas>
+</div>
+<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/themes/smoothness/jquery-ui.css" />
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js"></script>
+<script>
+var t;              // this will be the setInterval object.  We will control the speed with this
+var factor = 120;   // 120ms / the slider value; default: 120/4 = 30
+//ui slider 
+$( "#slider" ).slider({
+  orientation: "vertical",
+  range: "min",
+  min: 1,
+  max: 10,
+  value: 4,
+  slide: function( event, ui ) {
+    $( "#amount" ).val( ui.value );
+    clearInterval(t);
+    t = setInterval(DrawCanvas, 120 / ui.value);
+  }
+});
+$( "#amount" ).val( $( "#slider" ).slider( "value" ) );
+var speedvar= document.getElementById("amount").value;
+var canvas = document.getElementById("stage");
+var ctx = canvas.getContext("2d");
+var speed= speedvar;  //get value form jquery ui slider   
+var Ball = new Array();
+var BallNow;
+var SumMove = 50;
+var posX, posY, r, TheAngle, TheSpeed, MoveX, MoveY;
+
+for(i=0; i<SumMove; i++) {
+  posX = r + Math.random() * (canvas.width - r*2);
+  posY = r + Math.random() * (canvas.height - r*2);
+  r = 5;
+  TheAngle = Math.random() * 360;
+  TheSpeed = speed;
+  console.log(TheSpeed);
+  MoveX = Math.cos(Math.PI/180 * TheAngle) * TheSpeed;
+  MoveY = Math.sin(Math.PI/180 * TheAngle) * TheSpeed;
+
+  BallNow = {x: posX, y: posY, r:r, MoveX: MoveX, MoveY: MoveY};
+  Ball.push(BallNow);
+}
+t = setInterval(DrawCanvas, 30);
+
+function DrawCanvas() {
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  for(i=0; i<SumMove; i++) {
+    Ball[i].x += Ball[i].MoveX;
+    Ball[i].y += Ball[i].MoveY;
+    if(Ball[i].x + Ball[i].r >= canvas.width || Ball[i].x - Ball[i].r <= 0) {
+      Ball[i].MoveX = -Ball[i].MoveX;
+    }
+    if(Ball[i].y + Ball[i].r >= canvas.height || Ball[i].y - Ball[i].r <= 0) {
+      Ball[i].MoveY = -Ball[i].MoveY;
+    }
+    ctx.beginPath();
+    ctx.fillStyle = "#042fcf";
+    ctx.arc(Ball[i].x, Ball[i].y, Ball[i].r, 0, Math.PI*2,false);
+    ctx.fill();
+    ctx.closePath();
+  }
+}
+</script>
+
+</div><!--end of contentmain -->
+
+</div><!--end of wrapper -->
+
+</body>
+</html>
